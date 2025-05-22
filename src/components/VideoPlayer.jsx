@@ -3,7 +3,7 @@ import ReactPlayer from "react-player";
 
 import Seekbar from "./Seekbar";
 import VolumeContorls from "./VolumeControls";
-import { useCast } from "../utlis/useCast";
+
 
 export default function VideoPlayer({ video, playing, onTogglePlay, setPlaying }) {
     const [muted, setMuted] = useState(false);
@@ -13,7 +13,7 @@ export default function VideoPlayer({ video, playing, onTogglePlay, setPlaying }
     const containerRef = useRef(null);
     const playerRef = useRef(null);
     const clickTimer = useRef(null);
-    const { castAvailable, castMedia } = useCast();
+  
 
     const handleFullscreen = () => {
         const container = containerRef.current;
@@ -123,8 +123,7 @@ export default function VideoPlayer({ video, playing, onTogglePlay, setPlaying }
                             onForward={handleDoubleForwardClick}
                             onBackward={handleBackwardDoubleClick}
                             onFullscreen={handleFullscreen}
-                            castAvailable={castAvailable}
-                            onCast={() => castMedia(video)}
+    
                         />
                     </div>
                 </div>

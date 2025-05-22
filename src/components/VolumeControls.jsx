@@ -16,8 +16,7 @@ export default function VolumeContorls({
     onForward,
     onBackward,
     onFullscreen,
-    onCast,
-    castAvailable
+
 }) {
     return (
         <div className="flex items-center gap-1 text-4xl">
@@ -59,8 +58,6 @@ export default function VolumeContorls({
             </Tooltip>
             <Tooltip title="Cast" placement="top">
                 <IconButton
-                    onClick={onCast}
-                    disabled={!castAvailable}
                     sx={{ color: "white" }}
                 >
                     <CastIcon />
