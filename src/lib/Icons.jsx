@@ -8,6 +8,11 @@ import PlayCircleOutlineRoundedIcon from '@mui/icons-material/PlayCircleOutlineR
 import FastForwardIcon from '@mui/icons-material/FastForward';
 import FastRewindIcon from '@mui/icons-material/FastRewind';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import SettingsIcon from '@mui/icons-material/Settings';
+import HdIcon from '@mui/icons-material/Hd';
 
-
-export {VolumeOffIcon,PlayArrowIcon, VolumeUpIcon,IconButton,CastIcon, FullscreenIcon, PauseIcon,PlayCircleOutlineRoundedIcon,FastForwardIcon,FastRewindIcon}
+export {
+    VolumeOffIcon, PlayArrowIcon, VolumeUpIcon, IconButton, CastIcon,
+    FullscreenIcon, PauseIcon, PlayCircleOutlineRoundedIcon,
+    FastForwardIcon, FastRewindIcon, SettingsIcon, HdIcon
+}

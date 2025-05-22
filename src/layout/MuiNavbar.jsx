@@ -40,7 +40,7 @@ export default function Navbar() {
             Vid Craft
         </Typography>
     </Box>
-    <Stack
+    {/* <Stack
         direction="row"
         spacing={1}
         sx={{
@@ -78,7 +78,7 @@ export default function Navbar() {
         >
             Downloader
         </Button>
-    </Stack>
+    </Stack> */}
 </Toolbar>
         </AppBar>
     );
