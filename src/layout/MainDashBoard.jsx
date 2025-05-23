@@ -9,8 +9,14 @@ export default function DashBoard() {
     const [playing, setPlaying] = useState(false);
 
     const handleChange = (e) => {
-        setVideo(e.target.value);
-        setPlaying(false);
+        const url = e.target.value.trim();
+        if (url.startsWith('http')) {
+            setVideo(url);
+            setPlaying(false);
+        } else {
+            // Handle invalid URL
+            console.error('Invalid video URL');
+        }
     };
 
     const handleTogglePlay = () => setPlaying(prev => !prev);

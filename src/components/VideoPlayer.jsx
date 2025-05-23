@@ -1,19 +1,31 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import ReactPlayer from "react-player";
 
 import Seekbar from "./Seekbar";
 import VolumeContorls from "./VolumeControls";
-
+import { generateThumbnails } from "../utlis/Thumbnail";
 
 export default function VideoPlayer({ video, playing, onTogglePlay, setPlaying }) {
     const [muted, setMuted] = useState(false);
     const [volume, setVolume] = useState(0.5);
     const [played, setPlayed] = useState(0);
     const [duration, setDuration] = useState(0);
+    const [thumbnails, setThumbnails] = useState([]);
     const containerRef = useRef(null);
     const playerRef = useRef(null);
     const clickTimer = useRef(null);
-  
+
+
+    useEffect(() => {
+        if (video && duration > 0) {
+            generateThumbnails(video, duration)
+                .then(setThumbnails)
+                .catch(error => {
+                    console.error('Thumbnail generation failed:', error);
+                    setThumbnails([]);
+                });
+        }
+    }, [video, duration]);
 
     const handleFullscreen = () => {
         const container = containerRef.current;
@@ -24,41 +36,45 @@ export default function VideoPlayer({ video, playing, onTogglePlay, setPlaying }
             container.requestFullscreen();
         }
     };
+
     const handleMute = () => {
         setMuted(m => !m)
     }
+
     const handleVolumeChange = (e) => setVolume(parseFloat(e.target.value));
 
     const handleSeekChange = (e) => {
-        const seekTo = e.target.value
-        setPlayed(seekTo)
-        playerRef.current.seekTo(seekTo)
-    }
+        if (duration > 0) {
+            const seekTo = e.target.value;
+            setPlayed(seekTo);
+            playerRef.current.seekTo(parseFloat(seekTo));
+        }
+    };
 
     const handleBackwardDoubleClick = () => {
         if (playerRef.current) {
-            const current = playerRef.current.getCurrentTime()
+            const current = playerRef.current.getCurrentTime();
             const duration = playerRef.current.getDuration();
-            const newTime = current - 10
-            playerRef.current.seekTo(newTime, "seconds")
-            setPlayed(newTime / duration)
+            const newTime = Math.max(current - 10, 0);
+            playerRef.current.seekTo(newTime, "seconds");
+            setPlayed(newTime / duration);
         }
-    }
+    };
 
     const handleDoubleForwardClick = () => {
         if (playerRef.current) {
-            const current = playerRef.current.getCurrentTime()
+            const current = playerRef.current.getCurrentTime();
             const duration = playerRef.current.getDuration();
-            const newTime = current + 10
-            playerRef.current.seekTo(newTime, "seconds")
-            setPlayed(newTime / duration)
+            const newTime = Math.min(current + 10, duration);
+            playerRef.current.seekTo(newTime, "seconds");
+            setPlayed(newTime / duration);
         }
-    }
+    };
 
     const handleOverlayClick = () => {
         clickTimer.current = setTimeout(() => {
             if (clickTimer.current) {
-                onTogglePlay();
+                setPlaying(prev => !prev);
             }
             clickTimer.current = null;
         }, 200);
@@ -95,8 +111,12 @@ export default function VideoPlayer({ video, playing, onTogglePlay, setPlaying }
                             height="100%"
                             muted={muted}
                             volume={volume}
-                            onProgress={({ played }) => setPlayed(played)}
-                            onDuration={setDuration}
+                            onReady={() => console.log('Player ready')}
+                            onProgress={({ played }) => setPlayed(Math.min(Math.max(played, 0), 1))}
+                            onDuration={(dur) => {
+                                // console.log('Duration updated:', dur);
+                                setDuration(dur);
+                            }}
 
 
                         />
@@ -112,7 +132,9 @@ export default function VideoPlayer({ video, playing, onTogglePlay, setPlaying }
                         <Seekbar
                             duration={duration}
                             played={played}
-                            onSeek={handleSeekChange} />
+                            onSeek={handleSeekChange}
+                            thumbnails={thumbnails}
+                        />
                         <VolumeContorls
                             volume={volume}
                             muted={muted}
@@ -123,7 +145,6 @@ export default function VideoPlayer({ video, playing, onTogglePlay, setPlaying }
                             onForward={handleDoubleForwardClick}
                             onBackward={handleBackwardDoubleClick}
                             onFullscreen={handleFullscreen}
-    
                         />
                     </div>
                 </div>

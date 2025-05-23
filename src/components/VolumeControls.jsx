@@ -16,10 +16,15 @@ export default function VolumeContorls({
     onForward,
     onBackward,
     onFullscreen,
-
 }) {
+    const handleKeyDown = (e) => {
+        if (e.code === "Space" || e.key === " ") {
+            e.preventDefault();
+            onTogglePlay();
+        }
+    };
     return (
-        <div className="flex items-center gap-1 text-4xl">
+        <div className="flex items-center gap-1 text-4xl" tabIndex={0} onKeyDown={handleKeyDown}>
             <IconButton onClick={onMute} sx={{ color: "white" }}>
                 {muted || volume === 0 ? <VolumeOffIcon /> : <VolumeUpIcon />}
             </IconButton>

@@ -4,3 +4,8 @@
     box-sizing: border-box;
 }
 
+.thumbnail-preview {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.1s ease-in;
+}

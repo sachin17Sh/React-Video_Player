@@ -2,11 +2,10 @@ import { useState } from "react";
 import { formatTime } from "../utlis/FormatTime"
 
 
-
-
-export default function Seekbar({ played, duration, onSeek }) {
+export default function Seekbar({ played, duration, onSeek, thumbnails }) {
     const [previewTime, setPreviewTime] = useState(null);
     const [previewX, setPreviewX] = useState(0)
+
 
     const handleSeekBarMouseMove = (e) => {
         const rect = e.currentTarget.getBoundingClientRect();// method returns the size and position of an element relative to the viewport 
@@ -19,8 +18,13 @@ export default function Seekbar({ played, duration, onSeek }) {
     const handleSeekBarMouseLeave = () => {
         setPreviewTime(null)
     }
+    const findClosestThumbnail = (time) => {
+        if (!thumbnails || thumbnails.length === 0) return null;
+        return thumbnails.reduce((prev, curr) =>
+            Math.abs(curr.time - time) < Math.abs(prev.time - time) ? curr : prev
+        );
+    };
 
-    
     return (
         <div>
             <div className="relative w-full">
@@ -40,7 +44,7 @@ export default function Seekbar({ played, duration, onSeek }) {
                         pointerEvents: 'none'
                     }}>
                         <img
-                            src="#"
+                            src={findClosestThumbnail(previewTime)?.image}
                             alt="preview"
                             style={{ width: 80, height: 45, borderRadius: 4, marginBottom: 4 }}
                         />
