@@ -1,3 +1,4 @@
+import { useCast } from 'react-chromecast';
 import { Tooltip } from "@mui/material";
 import {
     VolumeUpIcon, VolumeOffIcon,
@@ -17,6 +18,35 @@ export default function VolumeContorls({
     onBackward,
     onFullscreen,
 }) {
+
+    const handleCastClick = () => {
+        if (!window.chrome || !window.chrome.cast || !window.chrome.cast.isAvailable) {
+            console.error("Chromecast is not available.");
+            return;
+        }
+
+        if (!cast) {
+            // Request a new session
+            window.chrome.cast.requestSession(
+                (session) => {
+                    console.log("Cast session started:", session);
+                },
+                (err) => {
+                    console.error("Failed to start cast session:", err);
+                }
+            );
+        } else {
+            // End current session
+            const session = window.cast.framework?.CastContext?.getInstance().getCurrentSession();
+            if (session) {
+                session.endSession(true);
+            } else {
+                console.warn("No active cast session found.");
+            }
+        }
+    };
+
+
     const handleKeyDown = (e) => {
         if (e.code === "Space" || e.key === " ") {
             e.preventDefault();
@@ -61,9 +91,10 @@ export default function VolumeContorls({
                     <HdIcon />
                 </IconButton>
             </Tooltip>
-            <Tooltip title="Cast" placement="top">
+            <Tooltip title={cast ? "Stop Casting" : "Cast"} placement="top">
                 <IconButton
-                    sx={{ color: "white" }}
+                    sx={{ color: cast ? "lightgreen" : "white" }}
+                    onClick={handleCastClick}
                 >
                     <CastIcon />
                 </IconButton>

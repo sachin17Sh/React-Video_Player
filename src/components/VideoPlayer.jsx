@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import ReactPlayer from "react-player";
+import { useCast } from 'react-chromecast';
 
 import Seekbar from "./Seekbar";
 import VolumeContorls from "./VolumeControls";
@@ -14,6 +15,24 @@ export default function VideoPlayer({ video, playing, onTogglePlay, setPlaying }
     const containerRef = useRef(null);
     const playerRef = useRef(null);
     const clickTimer = useRef(null);
+    const { cast, castState, session } = useCast();
+
+       useEffect(() => {
+        if (cast && session && video) {
+
+            const mediaInfo = new window.chrome.cast.media.MediaInfo(video, 'video/mp4'); 
+            const request = new window.chrome.cast.media.LoadRequest(mediaInfo);
+
+            session.loadMedia(request).then(
+                () => {
+                    console.log('Media loaded on Chromecast');
+                },
+                (error) => {
+                    console.error('Error loading media on Chromecast:', error);
+                }
+            );
+        }
+    }, [cast, session, video]);
 
 
     useEffect(() => {
